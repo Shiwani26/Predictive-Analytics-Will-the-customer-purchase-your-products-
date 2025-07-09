@@ -6,6 +6,10 @@ data = pd.read_csv("C:/Users/ankit/Documents/AAAAA SHIWANI/New Project/Python + 
 # Now you can safely use data.head()
 print(data.head())
 
+
+# Checking if there is any missing values
+data.isnull().sum()
+
 # Other exploration code
 print(data.shape)
 print(data.info())
