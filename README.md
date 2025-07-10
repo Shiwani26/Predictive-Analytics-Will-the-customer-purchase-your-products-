@@ -78,30 +78,108 @@ total_spending_by_age
 # Average review rating by age group
 Age_review = df.groupby('AgeGroup', observed=True)['Review Rating'].mean().reset_index()
 print(Age_review)
-``
+```
 
 Customers aged 18–29 are the top spenders, contributing \~\$52,905. Spending is stable from **30–69**, then drops sharply beyond age 70.
 
-### 🧑‍🤝‍🧑 Gender-Based Analysis
+###  Gender-Based Analysis
+```
+import pandas as pd
+from  Load_Data import load_data
 
-* **Male** customers spent **\$157,890** vs **\$75,191** by **females**.
-* Both genders prefer **Clothing** and **Accessories**.
-* **Outerwear** is the least purchased across both groups.
+# Load the data using the reusable function
+data = load_data()
 
-### 🧮 Value-Based Analysis
+## gender based spending
 
+gender_based = data.groupby('Gender')['Purchase Amount (USD)'].sum().reset_index(name='Total_Sales')
+gender_based
+
+
+##How much did each gender spend in each category
+gender_based = data.groupby(['Gender', 'Category'])['Purchase Amount (USD)'].sum().reset_index(name='Total_Sales')
+gender_based
+
+## checking Male purchasing behavior
+
+# Filter for males
+male_df = data[data['Gender'] == 'Male']
+
+# Group by category and sum purchase amounts
+male_category_spending = (
+    male_df.groupby('Category')['Purchase Amount (USD)'] .sum().reset_index().sort_values(by='Purchase Amount (USD)', ascending=False)
+)
+
+print(male_category_spending)
+
+# for female spending
+# Filter for female
+female_df = data[data['Gender'] == 'Female']
+
+# Group by category and sum purchase amounts
+female_category_spending = (
+    female_df.groupby('Category')['Purchase Amount (USD)'] .sum().reset_index().sort_values(by='Purchase Amount (USD)', ascending=False)
+)
+
+print(female_category_spending)
+```
+
+* Male customers spent \$157,890 vs \$75,191 by females.
+* Both genders prefer Clothing and Accessories.
+* Outerwear is the least purchased across both groups.
+
+###  Value-Based Analysis
+```
+import pandas as pd
+from  Load_Data import load_data
+
+# Load the data using the reusable function
+data = load_data()
+
+## Total spending per customer.
+spending_per_customer = data.groupby('Customer ID')['Purchase Amount (USD)'].sum().reset_index()
+spending_per_customer.head(10)
+
+## identify high-value vs low-value customer
+
+#  Calculate total spending per customer
+data['Total_Spent'] = data['Purchase Amount (USD)']  
+customer_spending = data.groupby('Customer ID')['Total_Spent'].sum().reset_index()
+
+#  Define a threshold to split high vs low value
+threshold = customer_spending['Total_Spent'].median()  
+
+#  Label customers
+customer_spending['Customer_Value'] = customer_spending['Total_Spent'].apply(
+    lambda x: 'High-Value' if x >= threshold else 'Low-Value'
+)
+
+print(customer_spending.head(10))
+
+
+##Frequency of purchases (number of  customers purchases per month).
+
+
+# Filter for Monthly purchasers
+monthly_df = data[data['Frequency of Purchases'] == 'Weekly']
+
+# Count number of 'Previous Purchases' records in that monthly group
+num_of_purchase_per_month = monthly_df['Previous Purchases'].count()
+
+print("Number of customers who purchase monthly:", num_of_purchase_per_month)
+```
 Customers were categorized as:
-
 * **High-Value**: Above median total spending.
 * **Low-Value**: Below median spending.
+* **weekly purchases** : 539 Cutomers, showing strong recurring engagement
 
-Additionally:
+## Net Promoter Score (NPS)
+NPS is a metric used to gauge customer loyalty and satisfaction by asking customers how likely they are to recommend a company’s product or service to others on a scale of 0 to 10. Respondents are classified into three categories:
 
-* **539 customers** make **weekly purchases**, showing strong recurring engagement.
-
----
-
-## 📈 Net Promoter Score (NPS)
+# Promoters (9–10) : Loyal enthusiasts who promote your brand.
+# Passives (7–8) : Satisfied but unenthusiastic.
+# Detractors (0–6) : Unhappy customers who may harm your brand through negative word-of-mouth.
+The NPS is calculated by subtracting the percentage of Detractors from the percentage of Promoters. A higher NPS indicates more customer loyalty and positive word-of-mouth, which are critical for business growth. To calculate the NPS, we will use review ratings as a proxy for overall satisfaction. Here’s how to calculate NPS:
 
 NPS was calculated based on review ratings:
 
