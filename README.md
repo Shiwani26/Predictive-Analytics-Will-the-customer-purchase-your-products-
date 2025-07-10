@@ -1,13 +1,12 @@
 
 
-## Will the Customer Purchase Your Product? – A Predictive Analytics Approach
+# Will the Customer Purchase Your Product?  A Predictive Analytics Approach
 
 ## Overview
 
 As a business owner, one of the key priorities is understanding whether customers will purchase your product again, maintain loyalty, and avoid churn. Ultimately, everything revolves around the customer, as they determine the long-term sustainability of the business.
 
 This project applies predictive analytics to assess customer behavior, identify purchasing trends, and calculate key performance metrics like churn rate, retention rate, and Net Promoter Score (NPS) using a comprehensive e-commerce dataset sourced from Kaggle.
-
 
 ##  Objectives
 
@@ -46,20 +45,42 @@ print(data.info())
 print(data.describe())
 ```
 
-### Key Insights:
+## Key Insights:
 
-* **Age**: Average is 44 years (range: 18–70).
-* **Purchase Amount**: Mean of \$59.76 (range: \$20–\$100).
-* **Review Rating**: Average is 3.75/5.
-* **Previous Purchases**: Average of 25, indicating repeat buying behavior.
+* Age: Average is 44 years (range: 18–70).
+* Purchase Amount: Mean of \$59.76 (range: \$20–\$100).
+* Review Rating: Average is 3.75/5.
+* Previous Purchases: Average of 25, indicating repeat buying behavior.
 
----
+### Age-Based Analysis
+```
+import pandas as pd
+from  Load_Data import load_data
 
-## 👥 Customer Segmentation
+# Load the data using the reusable function
+data = load_data()
 
-### 🎂 Age-Based Analysis
+# create age group
+bins = [18, 30, 40, 50, 60, 70, 80, 90, 101]
+labels = ['18-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-100']
+data['AgeGroup'] = pd.cut(data['Age'], bins=bins, labels=labels, right=False)
 
-Customers aged **18–29** are the top spenders, contributing \~\$52,905. Spending is stable from **30–69**, then drops sharply beyond age 70.
+# Sorting the age group
+df = data.sort_values(by='AgeGroup', ascending=True)
+df.head()
+
+# Spending as per age group
+
+total_spending_by_age = df.groupby('AgeGroup', observed=True)['Purchase Amount (USD)'].sum().reset_index()
+total_spending_by_age.columns = ['AgeGroup', 'Total_Spending']
+total_spending_by_age
+
+# Average review rating by age group
+Age_review = df.groupby('AgeGroup', observed=True)['Review Rating'].mean().reset_index()
+print(Age_review)
+``
+
+Customers aged 18–29 are the top spenders, contributing \~\$52,905. Spending is stable from **30–69**, then drops sharply beyond age 70.
 
 ### 🧑‍🤝‍🧑 Gender-Based Analysis
 
