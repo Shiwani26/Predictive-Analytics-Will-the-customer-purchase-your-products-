@@ -1,0 +1,31 @@
+import pandas as pd
+from Load_Data import load_data
+
+# Load the data using the reusable function
+data = load_data()
+
+## Total sales per season
+season_sales = data.groupby('Season')['Purchase Amount (USD)'].sum().reset_index(name='Total_Sales')
+
+# Frequency of purchases per season (count non-null entries)
+season_freq = data.groupby('Season')['Frequency of Purchases'].count().reset_index(name='Purchase_Frequency')
+
+# Merge results
+season_summary = season_sales.merge(season_freq, on='Season')
+season_summary
+
+
+
+# Category with the highest average rating
+Highest_Rating = data.groupby('Category')['Review Rating'].mean().reset_index().sort_values(by='Review Rating', ascending=False)
+print(Highest_Rating)
+
+# Filter rows where both 'Discount Applied' and 'Promo Code Used' are 'Yes'
+filtered_df = data[(data['Discount Applied'] == 'Yes') & (data['Promo Code Used'] == 'Yes')]
+
+#  Group by the required columns and get the max purchase amount
+highest_itempurchased = filtered_df.groupby(
+    ['Item Purchased', 'Discount Applied', 'Promo Code Used', 'Customer ID']
+)['Purchase Amount (USD)'].max().reset_index()
+
+print(highest_itempurchased)

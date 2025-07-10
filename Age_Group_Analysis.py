@@ -19,3 +19,6 @@ total_spending_by_age = df.groupby('AgeGroup', observed=True)['Purchase Amount (
 total_spending_by_age.columns = ['AgeGroup', 'Total_Spending']
 total_spending_by_age
 
+# Average review rating by age group
+Age_review = df.groupby('AgeGroup', observed=True)['Review Rating'].mean().reset_index()
+print(Age_review)

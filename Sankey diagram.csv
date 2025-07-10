@@ -1,0 +1,45 @@
+﻿Destination,Source,Sum of Value
+Clothing,Male,1181
+Accessories,Male,848
+Clothing,Female,556
+No,Credit Card,404
+Footwear,Male,400
+Accessories,Female,392
+No,PayPal,372
+No,Venmo,365
+No,Debit Card,363
+No,Bank Transfer,361
+No,Cash,358
+Credit Card,Clothing,319
+Yes,Credit Card,292
+Bank Transfer,Clothing,291
+Yes,Cash,290
+Yes,Venmo,288
+Debit Card,Clothing,286
+Venmo,Clothing,286
+Cash,Clothing,281
+PayPal,Clothing,274
+Yes,Bank Transfer,271
+Yes,Debit Card,270
+Yes,PayPal,266
+Credit Card,Accessories,245
+Outerwear,Male,223
+Venmo,Accessories,203
+Cash,Accessories,200
+Footwear,Female,199
+PayPal,Accessories,199
+Bank Transfer,Accessories,198
+Debit Card,Accessories,195
+PayPal,Footwear,113
+Venmo,Footwear,108
+Cash,Footwear,105
+Outerwear,Female,101
+Bank Transfer,Footwear,98
+Debit Card,Footwear,91
+Credit Card,Footwear,84
+Cash,Outerwear,62
+Debit Card,Outerwear,61
+Venmo,Outerwear,56
+PayPal,Outerwear,52
+Credit Card,Outerwear,48
+Bank Transfer,Outerwear,45

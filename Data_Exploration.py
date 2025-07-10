@@ -1,7 +1,8 @@
 import pandas as pd
+from Load_Data import load_data
 
-# Load the CSV file into the 'data' variable
-data = pd.read_csv("C:/Users/ankit/Documents/AAAAA SHIWANI/New Project/Python + Power BI/shopping_trends.csv")
+# Load the data using the reusable function
+data = load_data()
 
 # Now you can safely use data.head()
 print(data.head())
