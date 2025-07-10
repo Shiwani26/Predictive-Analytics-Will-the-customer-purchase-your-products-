@@ -95,13 +95,11 @@ data = load_data()
 gender_based = data.groupby('Gender')['Purchase Amount (USD)'].sum().reset_index(name='Total_Sales')
 gender_based
 
-
 ##How much did each gender spend in each category
 gender_based = data.groupby(['Gender', 'Category'])['Purchase Amount (USD)'].sum().reset_index(name='Total_Sales')
 gender_based
 
 ## checking Male purchasing behavior
-
 # Filter for males
 male_df = data[data['Gender'] == 'Male']
 
@@ -156,9 +154,7 @@ customer_spending['Customer_Value'] = customer_spending['Total_Spent'].apply(
 
 print(customer_spending.head(10))
 
-
 ##Frequency of purchases (number of  customers purchases per month).
-
 
 # Filter for Monthly purchasers
 monthly_df = data[data['Frequency of Purchases'] == 'Weekly']
@@ -176,9 +172,9 @@ Customers were categorized as:
 ## Net Promoter Score (NPS)
 NPS is a metric used to gauge customer loyalty and satisfaction by asking customers how likely they are to recommend a company’s product or service to others on a scale of 0 to 10. Respondents are classified into three categories:
 
-# Promoters (9–10) : Loyal enthusiasts who promote your brand.
-# Passives (7–8) : Satisfied but unenthusiastic.
-# Detractors (0–6) : Unhappy customers who may harm your brand through negative word-of-mouth.
+**Promoters (9–10)** : Loyal enthusiasts who promote your brand.
+**Passives (7–8)** : Satisfied but unenthusiastic.
+**Detractors (0–6)**: Unhappy customers who may harm your brand through negative word-of-mouth.
 The NPS is calculated by subtracting the percentage of Detractors from the percentage of Promoters. A higher NPS indicates more customer loyalty and positive word-of-mouth, which are critical for business growth. To calculate the NPS, we will use review ratings as a proxy for overall satisfaction. Here’s how to calculate NPS:
 
 NPS was calculated based on review ratings:
@@ -197,39 +193,55 @@ nps_score = nps_counts.get('Promoters', 0) - nps_counts.get('Detractors', 0)
 * **Passives**: 32.7%
 * **Promoters**: 31%
 * **NPS Score**: **-1.59**
+  This results in an NPS score of -1.59, which indicates extremely low customer satisfaction. This score is a critical indicator that significant improvements are needed in customer service to convert detractors into promoters. Some small improvements in customer experience could turn passives or detractors into promoters.
 
-➡️ **Conclusion**: Customer loyalty is low, and experience improvement is necessary to convert detractors into promoters.
-
----
-
-## 🤖 Predictive Analytics
-
-We used a **Random Forest Classifier** to predict if a customer is likely to purchase next month:
+##  Predictive Analytics
 
 ### Feature Engineering:
 
-* **Used\_Promo**, **Used\_Discount**
-* **Previous Purchases**
-* **Purchase Amount**
+```
+import pandas as pd
+from  Load_Data import load_data
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
 
-```python
-X = data[['Previous Purchases', 'Purchase Amount (USD)', 'Used_Discount', 'Used_Promo']]
+
+# Load the data using the reusable function
+data = load_data()
+
+# Feature Engineering 
+data['Used_Discount'] = (data['Discount Applied'] == 'Yes').astype(int)
+data['Used_Promo'] = (data['Promo Code Used'] == 'Yes').astype(int)
+
+# Select relevant features
+features = ['Previous Purchases', 'Purchase Amount (USD)', 'Used_Discount', 'Used_Promo']
+X = data[features]
 y = data['Likely_To_Purchase_Next_Month']
+
+#  Train/Test Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train Model 
+clf = RandomForestClassifier()
+clf.fit(X_train, y_train)
+
+#  Evaluate
+y_pred = clf.predict(X_test)
+print(classification_report(y_test, y_pred))
+
 ```
 
 ### Model Results:
-
 * **Overall Accuracy**: 62%
 * **Precision (Non-buyers)**: 0.71
 * **Recall (Non-buyers)**: 0.77
 * **Precision (Buyers)**: 0.27
 * **Recall (Buyers)**: 0.22
 
-➡️ The model is good at detecting **non-buyers**, but **struggles with buyers**, limiting its use for targeting repeat purchasers.
+The model shows that it is much better at predicting customers who are not likely to purchase next month (precision: 0.71, recall: 0.77) compared to those who are likely to purchase (precision: 0.27, recall: 0.22). This means the model correctly identifies most non-purchasers but struggles to detect actual purchasers. The overall accuracy is 62%, but the low scores for class 1 suggest that the model is not reliable for identifying likely buyers, which could limit its usefulness for marketing or targeting future campaigns.
 
----
-
-## 🔁 Churn Analysis
+##  Churn Analysis
 
 ```python
 churned = data['Likely_To_Purchase_Next_Month'] == 0
@@ -237,21 +249,15 @@ churn_rate = churned.mean() * 100
 ```
 
 * **Churn Rate**: **72%**
-* Indicates that most customers are **not expected to return** next month.
+* Indicates that most customers are not expected to return next month.
 
----
-
-## 📌 Conclusion
+## Conclusion
 
 The findings indicate that:
 
 * **Customer churn is high (72%)**.
 * **NPS score is negative (-1.59)**, showing dissatisfaction.
 * **The predictive model struggles to identify loyal customers**, but can identify churned ones.
-
-While segments like **young adults (18–29)** and **male shoppers** show potential, broader loyalty and satisfaction improvements are needed.
-
----
 
 ## 💡 Recommendations
 
@@ -280,4 +286,4 @@ While segments like **young adults (18–29)** and **male shoppers** show potent
 * Reevaluate underperforming areas like **Outerwear**.
 * Promote with **seasonal offers**, **bundle deals**, or **marketing push**.
 
----
+
